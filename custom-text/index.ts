@@ -1,0 +1,6 @@
+export * from './text-bold'
+export * from './text-title'
+export * from './text-mention'
+export * from './text-normal'
+export * from './text-time'
+export * from './text-end'
