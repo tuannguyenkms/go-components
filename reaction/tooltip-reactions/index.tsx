@@ -3,7 +3,7 @@ import Tooltip from 'react-native-walkthrough-tooltip'
 import { View, Image, TouchableWithoutFeedback, ViewStyle, StatusBar } from 'react-native'
 import { REACTION_TYPE } from '@types'
 import { listReactionType } from 'src/constants/reaction'
-import { ISIOS } from '@utils'
+import { ISIOS, width } from '@utils'
 
 const ICON_SIZE = 25
 interface ListTypeReactionsProps {
@@ -13,8 +13,8 @@ const ListTypeReactions = (props: ListTypeReactionsProps) => {
   const { onReaction } = props
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      {listReactionType.map((item) => (
-        <TouchableWithoutFeedback onPress={() => onReaction(item.value)}>
+      {listReactionType.map((item, index) => (
+        <TouchableWithoutFeedback key={index.toString()} onPress={() => onReaction(item.value)}>
           <Image
             source={item.icon}
             style={{
@@ -47,9 +47,10 @@ export const ToolTipReaction = (props: ToolTipReactionProps) => {
       isVisible={isToolTip}
       content={<ListTypeReactions onReaction={onReaction} />}
       onClose={() => setToolTip(false)}
-      backgroundColor={'transparent'}
+      backgroundColor="transparent"
       topAdjustment={ISIOS ? 0 : -StatusBar.currentHeight}
       tooltipStyle={{ shadowOpacity: 0.1 }}
+      arrowStyle={{ marginLeft: width(3) }}
       contentStyle={[
         {
           borderRadius: 50,

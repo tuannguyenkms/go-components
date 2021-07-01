@@ -1,9 +1,11 @@
 /* eslint-disable radix */
+import { width } from '@utils'
 import { get } from 'lodash'
 import moment from 'moment'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { View } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import Swiper from 'react-native-swiper'
+import { DATE_FORMAT } from 'themes/Constants'
 import Day from './Day'
 import Header from './Header'
 
@@ -40,7 +42,7 @@ const getShowingHeaderItems = (week, format) => {
   if (firstVar === lastVar) {
     return firstVar
   }
-  return `${firstVar  }-${  lastVar}`
+  return `${firstVar}-${lastVar}`
 }
 
 interface CalendarStripProps {
@@ -54,7 +56,7 @@ interface CalendarStripProps {
   style?
   activeDayBorderColor
   dateNumberStyle
-  textHightlightStyle
+  textHighlightStyle
   dateNameStyle
   headerStyle?
   headerText
@@ -63,7 +65,10 @@ interface CalendarStripProps {
   showMonth
   list?: any[]
 }
-export const CalendarStrip = (props:CalendarStripProps )=> {
+
+const arrayDayInWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+
+export const CalendarStrip = (props: CalendarStripProps) => {
   const {
     list = [],
     style,
@@ -80,16 +85,16 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
     dateNumberStyle,
     showYear = true,
     showMonth = true,
-    textHightlightStyle,
-    startingDate= moment(),
-    activeDayBorderColor =  'steelblue'
+    textHighlightStyle: textHighlightStyle,
+    startingDate = moment(),
+    activeDayBorderColor = 'steelblue'
   } = props
   const [weeksState, setWeeks] = useState(null)
-  const [activeDayState, setActiveDay]= useState(null)
-  const [pagesState, setPages]  = useState( ['-1', '0', '1'])
+  const [activeDayState, setActiveDay] = useState(null)
+  const [pagesState, setPages] = useState(['-1', '0', '1'])
   const [keyState, setKey] = useState(0)
   const [showingMonthsState, setShowMonths] = useState('')
-  const [showingYearsState, setShowingYears]= useState('')
+  const [showingYearsState, setShowingYears] = useState('')
   const refSwipe = useRef(null)
 
   const getWeeks = (date: any) => {
@@ -103,26 +108,26 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
     return weeks
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     if (onMount) {
       onMount()
     }
     const weeks = getWeeks(startingDate)
     setWeeks(weeks)
-    setActiveDay(moment())
+    setActiveDay(activeDay || moment())
     setShowMonths(getShowingHeaderItems(weeks[pagesState[1]], 'MMMM'))
     setShowingYears(getShowingHeaderItems(weeks[pagesState[1]], 'YYYY'))
-  },[])
+  }, [])
 
-  const swiperScrollHandler = useCallback((index) => {
+  const swipeScrollHandler = useCallback((index) => {
     if (calendarSwiped) {
       calendarSwiped(index)
     }
     if (index === 0) {
       const newPages = pagesState.map((e) => (parseInt(e) - 1).toString())
       const newKey = keyState + 1
-      const weeksObjKeys =  Object.keys(weeksState)
-      const arrWeeks =  weeksObjKeys.map(i => Number(i))
+      const weeksObjKeys = Object.keys(weeksState)
+      const arrWeeks = weeksObjKeys.map(i => Number(i))
       const nextKey = Math.min(...arrWeeks) - 1
       const deleteKey = Math.max(...arrWeeks)
       const weeks = {
@@ -134,12 +139,12 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
       setKey(newKey)
       setPages(newPages)
       setWeeks(weeks)
-      setShowMonths( getShowingHeaderItems(weeks[newPages[1]], 'MMMM'))
+      setShowMonths(getShowingHeaderItems(weeks[newPages[1]], 'MMMM'))
     } else if (index === 2) {
       const newPages = pagesState.map((e) => (parseInt(e) + 1).toString())
       const newKey = keyState + 1
       const weeksObjKeys = Object.keys(weeksState)
-      const arrWeeks =  weeksObjKeys.map(i => Number(i))
+      const arrWeeks = weeksObjKeys.map(i => Number(i))
       const nextKey: any = Math.max(...arrWeeks) + 1
       const deleteKey = Math.min(...arrWeeks)
       const weeks = {
@@ -150,10 +155,10 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
       setKey(newKey)
       setPages(newPages)
       setWeeks(weeks)
-      setShowMonths( getShowingHeaderItems(weeks[newPages[1]], 'MMMM'))
+      setShowMonths(getShowingHeaderItems(weeks[newPages[1]], 'MMMM'))
       setShowingYears(getShowingHeaderItems(weeks[newPages[1]], 'YYYY'))
     }
-  },[keyState, pagesState, weeksState, showMonth])
+  }, [keyState, pagesState, weeksState, showMonth])
 
   const handleActiveDayChange = useCallback(() => {
     const activeWeekNumber = weeksState ? weeksState[pagesState[1]][3].format('W') : 'M'
@@ -162,7 +167,7 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
       setActiveDay(activeDay)
     }
     if (activeDayWeekNumber - activeWeekNumber === 1 || activeDayWeekNumber - activeWeekNumber === -1) {
-      swiperScrollHandler(activeDayWeekNumber - activeWeekNumber + 1)
+      swipeScrollHandler(activeDayWeekNumber - activeWeekNumber + 1)
       setActiveDay(activeDay)
     }
     if (Math.abs(activeDayWeekNumber - activeWeekNumber) > 1) {
@@ -172,20 +177,20 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
       setShowMonths(getShowingHeaderItems(weeks[pagesState[1]], 'MMMM'))
       setShowingYears(getShowingHeaderItems(weeks[pagesState[1]], 'YYYY'))
     }
-  },[activeDay])
+  }, [activeDay])
 
-  useEffect(()=>{
+  useEffect(() => {
     handleActiveDayChange()
-  },[activeDay])
+  }, [activeDay])
 
   const dayPressedHandler = useCallback((day) => {
     setActiveDay(day)
     if (dayPressed) {
       dayPressed(day)
     }
-  },[activeDayState])
+  }, [activeDayState])
 
-  return  (
+  return (
     <View style={[{ height: 130 }, { height }, { ...style }]} >
       <Header
         headerStyle={headerStyle}
@@ -197,60 +202,72 @@ export const CalendarStrip = (props:CalendarStripProps )=> {
         onLeft={() => refSwipe.current.scrollBy(-1, true)}
         onRight={() => refSwipe.current.scrollBy(1, true)}
       />
-      {
-        weeksState !== null
-          ? (
-            <Swiper
-              bounces
-              index={1}
-              loop={false}
-              scrollsToTop
-              key={keyState}
-              ref={refSwipe}
-              showsPagination={false}
-              onIndexChanged={swiperScrollHandler}
-            >
-              {
-                pagesState.map((page, pageIndex) => {
-                  return (
-                    <View key={pageIndex.toString()} style={{ flexDirection: 'row' }}>
-                      {
-                        weeksState[page].map((day, idx) => {
-                          const dayFormated = moment(day).format('DD MMM YYYY')
-                          const isActive = moment(dayFormated)
-                            .diff(minDate) >= 0 && moment(dayFormated).diff(maxDate) <= 0
-                          const findItem = list.find(i=> moment(i.from).format('DD MMM YYYY')  === dayFormated)
-                          const status  = get(findItem, 'status')
-                          const isCurrentDate =  moment(dayFormated).isSame(new Date(),'day')
-
-                          return (
-                            <Day
-                              click={() => dayPressedHandler(day)}
-                              active={
-                                moment(day).format('MM-DD-YYYY') ===  activeDayState.format('MM-DD-YYYY')
-                              }
-                              key={idx.toString()}
-                              isActive={isActive}
-                              status={status}
-                              isCurrentDate={isCurrentDate}
-                              dayNumber={moment(day).format('D')}
-                              dayInWeekName={getDateOfWeek(day)}
-                              activeDayBorderColor={activeDayBorderColor}
-                              dateNameStyle={dateNameStyle}
-                              dateNumberStyle={dateNumberStyle}
-                              textHightlightStyle={textHightlightStyle}
-                            />
-                          )
-                        })
-                      }
-                    </View>
-                  )
-                })
-              }
-            </Swiper>
-          )
-          : <View/>
-      }
+      <>
+        <View style={styles.containerHeader}>
+          {
+            arrayDayInWeek.map((item: string, index: number) =>
+              <Text key={index.toString()} style={[{ width: width(100) / 7 }, { color: '#7d95a8', fontSize: 12 }, dateNameStyle]}>
+                {item}
+              </Text>)
+          }
+        </View>
+        {
+          weeksState !== null
+            ? (
+              <Swiper
+                bounces
+                index={1}
+                loop={false}
+                onIndexChanged={swipeScrollHandler}
+                scrollsToTop key={keyState} ref={refSwipe} showsPagination={false}
+              >
+                {
+                  pagesState.map((page, pageIndex) => {
+                    return (
+                      <View key={pageIndex.toString()} style={{ flexDirection: 'row' }}>
+                        {
+                          weeksState[page].map((day, idx) => {
+                            const dayFormatted = moment(day).format(DATE_FORMAT)
+                            const isActive = moment(dayFormatted)
+                              .diff(minDate) >= 0 && moment(dayFormatted).diff(maxDate) <= 0
+                            const findItem = list.find(i => moment(i.from).format(DATE_FORMAT) === dayFormatted)
+                            const status = get(findItem, 'status')
+                            const isCurrentDate = moment(dayFormatted).isSame(new Date(), 'day')
+                            return (
+                              <Day
+                                status={status}
+                                isActive={isActive}
+                                key={idx.toString()}
+                                isCurrentDate={isCurrentDate}
+                                dateNameStyle={dateNameStyle}
+                                dateNumberStyle={dateNumberStyle}
+                                dayInWeekName={getDateOfWeek(day)}
+                                dayNumber={moment(day).format('D')}
+                                click={() => dayPressedHandler(day)}
+                                textHighlightStyle={textHighlightStyle}
+                                activeDayBorderColor={activeDayBorderColor}
+                                active={moment(day).format('MM-DD-YYYY') === activeDayState.format('MM-DD-YYYY')}
+                              />
+                            )
+                          })
+                        }
+                      </View>
+                    )
+                  })
+                }
+              </Swiper>
+            )
+            : <View />
+        }
+      </>
     </View>
   )
 }
+const styles = StyleSheet.create({
+  containerHeader: {
+    width: width(100),
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }
+})

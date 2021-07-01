@@ -13,9 +13,15 @@ interface ModalSelectProps {
   isVisible: boolean
   setVisible: (aurg1) => void
   customStyle?: any
-  type?: 'normal' | 'error' | 'success'
+  type?: TYPE_TOAST
   timeout?: number
   allowBackdropPress?: boolean
+}
+
+export enum TYPE_TOAST {
+  NORMAL = 'normal',
+  ERROR = 'error',
+  SUCCESS = 'success'
 }
 
 export const Toast: FunctionComponent<ModalSelectProps> = (props: ModalSelectProps) => {

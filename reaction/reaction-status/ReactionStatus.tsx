@@ -9,7 +9,6 @@ import { ReactionModal } from '../reaction-modal'
 import { noop } from 'lodash'
 
 interface AppProps {
-  isIcon?: boolean
   disable?: boolean
   totalComments?: number
   reactionTypeArray?: any[]
@@ -22,7 +21,7 @@ interface AppProps {
 
 const EMOJI_SIZE = 24
 
-export const ReactionStatus: SFC<AppProps> = (props) => {
+export const ReactionStatus: SFC<AppProps> = (props: AppProps) => {
   const {
     onPressComment2 = noop,
     onPressComment = noop,

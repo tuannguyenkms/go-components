@@ -8,6 +8,7 @@ import { designColors } from 'themes/design-color'
 import { textStyles } from 'themes/design-texts'
 import { ReactionModal } from '../reaction-modal'
 import { ToolTipReaction } from '../tooltip-reactions'
+import { width } from '@utils'
 
 interface AppProps {
   isIcon?: boolean
@@ -23,7 +24,7 @@ interface AppProps {
 
 const EMOJI_SIZE = 16
 
-export const ReactionStatus: SFC<AppProps> = (props:any) => {
+export const ReactionStatus: SFC<AppProps> = (props: any) => {
   const {
     onPressComment2 = noop,
     onPressComment = noop,
@@ -34,6 +35,7 @@ export const ReactionStatus: SFC<AppProps> = (props:any) => {
     containerStyle,
     iconSize = EMOJI_SIZE,
   } = props
+
   const [isToolTip, setToolTip] = useState(false)
   const onReactionNewsCall = useCallback(
     (aurg: REACTION_TYPE) => {
@@ -68,7 +70,9 @@ export const ReactionStatus: SFC<AppProps> = (props:any) => {
               {listReactionType.map((it, index) => {
                 if (unique.includes(it.value)) {
                   return (
-                    <View style={[styles.iconContainer, { zIndex: listReactionType.length - index }]}>
+                    <View
+                      key={index.toString()}
+                      style={[styles.iconContainer, { zIndex: listReactionType.length - index }]}>
                       <Image
                         key={index.toString()}
                         source={it.icon}
@@ -103,7 +107,7 @@ export const ReactionStatus: SFC<AppProps> = (props:any) => {
           isToolTip={isToolTip}
           setToolTip={setToolTip}
           onReaction={onReactionNewsCall}
-          contentStyle={{ marginLeft: 48 }}
+          contentStyle={{ marginLeft: width(6) }}
         >
           <TouchableWithoutFeedback onPress={() => setToolTip(true)} onLongPress={() => setToolTip(true)}>
             <View style={styles.iconReact}>

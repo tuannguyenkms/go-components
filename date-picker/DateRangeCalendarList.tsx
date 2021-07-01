@@ -1,5 +1,6 @@
+import { ScheduleClockBasedType } from '@constants'
 import { MYWIDTH } from '@utils'
-import { isString, isObject, isNumber } from 'lodash'
+import { isString, isObject, isNumber, isUndefined } from 'lodash'
 import noop from 'lodash/noop'
 import moment from 'moment'
 import React, { Component } from 'react'
@@ -38,15 +39,13 @@ const subColor = Colors.primaryColor.main
 
 interface PropsType {
   handleChangeDate: (fromDate: any, toDate: any) => any
-  minDate?: string
-  holidays?: any
-  workSchedule?: any
   checkIsHoliday?: (date: any) => boolean
-  checkIsWorkingDate?: (date: any) => number | { hours: number }
+  checkIsWorkingDate?: (date: any) => number | { hours: number } | ScheduleClockBasedType
   from?: any
   to?: any
   type: 'disable' | 'hide'
   calendarHeight?: number
+  checkDurationBased?: () => boolean
 }
 
 interface StateType {
@@ -143,15 +142,18 @@ class DateRangeCalendarList extends Component<PropsType, StateType> {
   }
 
   onDayPress = (day: XDate) => {
-    const { handleChangeDate = noop, checkIsHoliday, checkIsWorkingDate } = this.props
+    const { handleChangeDate = noop, checkIsHoliday, checkIsWorkingDate, checkDurationBased } = this.props
     const { fromDate, toDate } = this.state
+    const isDurationBased = checkDurationBased()
     if (checkIsHoliday && checkIsHoliday(moment(day.dateString))) {
       return
     }
 
     if (checkIsWorkingDate) {
       const checkDate = checkIsWorkingDate(moment(day.dateString))
-      if (isObject(checkDate) && checkDate.hours === 0) {
+      if (isObject(checkDate) &&
+        ((isDurationBased && checkDate.hours === 0) ||
+          (!isDurationBased && isUndefined(checkDate.total)))) {
         return
       }
       if (isNumber(checkDate) && checkDate === 0) {

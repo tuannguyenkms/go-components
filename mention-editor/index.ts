@@ -1,2 +1,3 @@
-import EU from './editor/editor-utils'
+import EU from './EU/editor-utils'
+
 export { EU }

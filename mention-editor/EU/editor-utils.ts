@@ -102,7 +102,7 @@ export const displayTextForBE = (inputText, formatMentionNode, data = []) => {
   return formattedText
 }
 
-export const EU = {
+const EU = {
   specialTagsEnum: {
     mention: 'mention',
     strong: 'strong',
@@ -236,7 +236,6 @@ export const EU = {
   findMentions: (val) => {
     const reg = /@\[([^\]]+?)\]\(id:([^\]]+?)\)/gim
     const indexes = []
-    // tslint:disable-next-line: no-conditional-assignment
     while ((match = reg.exec(val))) {
       indexes.push({
         start: match.index,
@@ -252,7 +251,6 @@ export const EU = {
   findMentionsBE: (val) => {
     const reg = /\{\{([^\]]+?)\}\}/gim
     const indexes = []
-    // tslint:disable-next-line: no-conditional-assignment
     while ((match = reg.exec(val))) {
       indexes.push({
         start: match.index,
@@ -272,5 +270,4 @@ export const EU = {
   displayTextForBE,
   displayTextForBEWithoutComponent,
 }
-
 export default EU

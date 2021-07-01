@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable radix */
+/* eslint-disable no-case-declarations */
 import SimpleDatePicker from '@components/SimpleDatePicker'
 import { FONTS } from '@constants'
 import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import Colors from 'themes/Colors'
-import { Select } from '../../components/multi-select'
+import { Select } from "../multi-select"
 import { PhoneInput } from '@components/phone-number'
 import { isNumber } from 'lodash'
 import { RadioForm } from '@components/simple-radio-button/RadioForm'
@@ -42,7 +45,7 @@ interface PropTypes {
   placeholder?: string
   maxLength?: number
   getLabel?: (item) => string
-  testID?: {}
+  testID?: AnimationPlayState
   validate?: (value) => boolean
   getValue?: (item) => string
   maximumDate?: Date
@@ -62,7 +65,7 @@ const InputByType: React.SFC<PropTypes> = ({
   validate,
   maximumDate,
   hideEditIcon,
-}) => {
+}: PropTypes) => {
   const [componentValue, changeValue] = useState(value)
   const handleOnChange = useCallback((newValue) => {
     onChange(newValue, index)
@@ -96,7 +99,7 @@ const InputByType: React.SFC<PropTypes> = ({
             onChangeText={handleOnChange}
             numberOfLines={1}
             placeholder={placeholder}
-            placeholderTextColor={`#c3c3c3`}
+            placeholderTextColor="#c3c3c3"
             maxLength={maxLength || DEFAULT_MAXLENGTH}
           />
           {!hideEditIcon && icEdit(20, Colors.primaryColor.main)}
@@ -114,7 +117,7 @@ const InputByType: React.SFC<PropTypes> = ({
             multiline
             numberOfLines={3}
             placeholder={placeholder}
-            placeholderTextColor={`#c3c3c3`}
+            placeholderTextColor="#c3c3c3"
             maxLength={1000}
           />
           {!hideEditIcon && icEdit(20, Colors.primaryColor.main)}
@@ -150,7 +153,7 @@ const InputByType: React.SFC<PropTypes> = ({
             onChangeText={handleOnChangeNumericInput}
             keyboardType="numeric"
             numberOfLines={1}
-            placeholderTextColor={`#c3c3c3`}
+            placeholderTextColor="#c3c3c3"
             autoFocus={autoFocus}
             maxLength={maxLength || DEFAULT_MAXLENGTH}
             placeholder={placeholder}
@@ -169,7 +172,7 @@ const InputByType: React.SFC<PropTypes> = ({
             onChangeText={handleOnChange}
             keyboardType="email-address"
             numberOfLines={1}
-            placeholderTextColor={`#c3c3c3`}
+            placeholderTextColor="#c3c3c3"
             autoFocus={autoFocus}
             maxLength={maxLength || DEFAULT_MAXLENGTH}
             autoCapitalize="none"
@@ -189,9 +192,7 @@ const InputByType: React.SFC<PropTypes> = ({
             formHorizontal={false}
             data={dataOptions}
             initialValue={componentValue}
-            onPress={(value) => {
-              handleOnChange(value)
-            }}
+            onPress={(value: any) => { handleOnChange(value) }}
             buttonInnerColor={Colors.mainWhite}
             buttonColor={Colors.mainWhite}
             style={{ alignSelf: 'flex-start' }}

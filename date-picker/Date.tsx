@@ -58,8 +58,7 @@ const DateComponent = observer((props: PropsType) => {
   const workingDate = useMemo(() => checkIsWorkingDate && checkIsWorkingDate(moment(date.dateString)), [
     date.dateString,
   ])
-
-  const isWorkingDate = get(workingDate, 'hours') > 0
+  const isWorkingDate = get(workingDate, 'total') || get(workingDate, 'hours') > 0
 
   const dayColor = isHoliday ? designColors.red100 : !isWorkingDate ? designColors.bird85 : designColors.dark100
 

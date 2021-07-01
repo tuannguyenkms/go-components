@@ -6,7 +6,7 @@ import { LocalSetting } from '@configuration'
 import { HIT_SLOP } from '@constants'
 import { appModel } from '@models'
 import { REACTION_TYPE } from '@types'
-import { keyExtractor } from '@utils'
+import { keyExtractor, width } from '@utils'
 import get from 'lodash/get'
 import React, { useCallback, useState } from 'react'
 import { FlatList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
@@ -83,7 +83,7 @@ const ItemCommentInfo = ({ item, openActionSheet, onReactionComment, onPressRepl
                     <ToolTipReaction
                       isToolTip={state}
                       setToolTip={setState}
-                      contentStyle={{ marginLeft: 50 }}
+                      contentStyle={{ marginLeft: width(5), right: 2 }}
                       onReaction={onReactionCommentCall}
                     >
                       <TouchableWithoutFeedback hitSlop={HIT_SLOP} onPress={() => setState(true)}>

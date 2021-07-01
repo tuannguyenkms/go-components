@@ -43,7 +43,6 @@ class SimpleDatePicker extends React.Component<PropsType, StateType> {
 
   handleDatePicked = (date: Date) => {
     const changeValue = getUTCString(date)
-
     const { onChange, validate } = this.props
     if (validate) {
       const result = validate(date)
@@ -55,9 +54,11 @@ class SimpleDatePicker extends React.Component<PropsType, StateType> {
         return
       }
     }
-    this.setState({ pickedDate: date })
+    this.setState({
+      pickedDate: date,
+      isDateTimePickerVisible: false
+    })
 
-    this.hideDateTimePicker()
     setTimeout(() => {
       onChange(changeValue)
     }, 500)
